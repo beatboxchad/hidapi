@@ -27,7 +27,7 @@
 #include <string.h>
 #include <math.h>
 
-#ifdef _WIN32
+#ifdef WIN32
 #include <windows.h>
 // for MinGW < 5.3 include locally provided "../windows hidsdi.h" rather
 // than #include <hidsdi.h>:
@@ -1132,20 +1132,6 @@ int hid_send_output_report_old( struct hid_dev_desc * devd, int reportid ){
 
 struct hid_dev_desc * hid_read_descriptor( hid_device * devd ){
   struct hid_dev_desc * desc;
-
-#ifdef APPLE
-  desc = (struct hid_dev_desc *) malloc( sizeof( struct hid_dev_desc ) );
-  desc->device = devd;
-  hid_parse_element_info( desc );
-  return desc;
-#endif
-#ifdef WIN32
-  desc = (struct hid_dev_desc *) malloc( sizeof( struct hid_dev_desc ) );
-  desc->device = devd;
-  hid_parse_element_info( desc );
-  return desc;
-#endif
-#ifdef LINUX_FREEBSD
   unsigned char descr_buf[HIDAPI_MAX_DESCRIPTOR_SIZE];
   int res;
   res = hid_get_report_descriptor( devd, descr_buf, HIDAPI_MAX_DESCRIPTOR_SIZE );
@@ -1158,7 +1144,6 @@ struct hid_dev_desc * hid_read_descriptor( hid_device * devd ){
     hid_parse_report_descriptor( descr_buf, res, desc );
     return desc;
   }
-#endif
 }
 
 struct hid_dev_desc * hid_open_device_path( const char *path, unsigned short vendor, unsigned short product ){
